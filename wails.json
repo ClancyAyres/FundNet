@@ -1,0 +1,42 @@
+{
+  "name": "FundNet",
+  "description": "基金净值估计应用",
+  "author": {
+    "name": "Clancy",
+    "email": "clancy@example.com"
+  },
+  "version": "1.0.0",
+  "build:dir": "build",
+  "frontend:dir": "frontend",
+  "wailsjsdir": "frontend/src/wails",
+  "bindings": {
+    "structs": [],
+    "calls": []
+  },
+  "debounceMS": 300,
+  "windows": {
+    "Webview2": true,
+    "WhiteList": [],
+    "Version": 2
+  },
+  "mac": {
+    "WhiteList": [],
+    "Sign": false,
+    "Entitlements": "",
+    "Provider": ""
+  },
+  "programs": [
+    {
+      "name": "backend",
+      "command": "cd backend && go run main.go",
+      "shell": "bash"
+    }
+  ],
+  "info": {
+    "companyName": "FundNet",
+    "fileDescription": "基金净值估计应用",
+    "originalFilename": "FundNet",
+    "productName": "FundNet",
+    "internalName": "FundNet"
+  }
+}

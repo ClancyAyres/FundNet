@@ -49,9 +49,9 @@ function App() {
       <Content className="site-content">
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/funds" element={<Funds />} />
-          <Route path="/positions" element={<Positions />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/funds" element={<Funds key="funds" />} />
+          <Route path="/positions" element={<Positions key="positions" />} />
+          <Route path="/settings" element={<Settings key="settings" />} />
         </Routes>
       </Content>
       <Footer style={{ textAlign: 'center' }}>

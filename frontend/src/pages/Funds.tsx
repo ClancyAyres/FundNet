@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Card, Table, Button, Modal, Form, Input, Select, message, Tag, Space } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import api from '../services/api'
@@ -22,16 +22,16 @@ interface Sector {
 function Funds() {
   const [funds, setFunds] = useState<Fund[]>([])
   const [sectors, setSectors] = useState<Sector[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [form] = Form.useForm()
 
+  // 初始加载数据
   useEffect(() => {
     fetchData()
   }, [])
 
   const fetchData = async () => {
-    setLoading(true)
     try {
       const [fundsRes, sectorsRes] = await Promise.all([
         api.get('/funds'),
@@ -45,18 +45,22 @@ function Funds() {
       }
     } catch (error) {
       console.error('Failed to fetch data:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
   const handleAdd = async (values: { code: string; name?: string; sector?: string }) => {
     try {
-      await api.post('/funds', values)
+      const res = await api.post('/funds', values)
       message.success('添加成功')
       setModalVisible(false)
       form.resetFields()
-      fetchData()
+      // 乐观更新：添加到列表
+      if (res.data?.data) {
+        const newFund = res.data.data as Fund
+        setFunds(prev => [...prev, newFund])
+      } else {
+        fetchData()
+      }
     } catch (error) {
       message.error('添加失败')
     }
@@ -66,7 +70,8 @@ function Funds() {
     try {
       await api.delete(`/funds/${code}`)
       message.success('删除成功')
-      fetchData()
+      // 乐观更新：直接从状态中移除
+      setFunds(prev => prev.filter(f => f.code !== code))
     } catch (error) {
       message.error('删除失败')
     }

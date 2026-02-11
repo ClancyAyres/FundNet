@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import { HomeOutlined, FundOutlined, PieChartOutlined, SettingOutlined } from '@ant-design/icons'
 import Dashboard from './pages/Dashboard'
@@ -9,6 +9,9 @@ import Settings from './pages/Settings'
 const { Header, Content, Footer } = Layout
 
 function App() {
+  const location = useLocation()
+  const currentKey = location.pathname
+
   const menuItems = [
     {
       key: '/',
@@ -38,7 +41,7 @@ function App() {
         <div className="site-logo">FundNet</div>
         <Menu
           mode="horizontal"
-          defaultSelectedKeys={['/']}
+          selectedKeys={[currentKey]}
           items={menuItems}
           style={{ minWidth: 400, borderBottom: 'none' }}
         />

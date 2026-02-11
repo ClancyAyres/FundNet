@@ -5,14 +5,14 @@ export interface Fund {
   name: string;
   sector: string;
   nav: number;
-  nav_date: string;
+  nav_date: Date;
   estimate_nav: number;
-  estimate_time: string;
+  estimate_time: Date;
   daily_growth: number;
   subscribed: boolean;
-  subscribe_time: string;
-  created_at: string;
-  updated_at: string;
+  subscribe_time: Date;
+  created_at: Date;
+  updated_at: Date;
 }
 
 // 板块类型
@@ -21,8 +21,8 @@ export interface Sector {
   name: string;
   color: string;
   sort_order: number;
-  created_at: string;
-  updated_at: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
 // 持仓类型
@@ -38,8 +38,8 @@ export interface Position {
   profit_rate: number;
   daily_growth: number;
   sector: string;
-  created_at: string;
-  updated_at: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
 // 估算结果
@@ -49,12 +49,12 @@ export interface EstimateResult {
   nav: number;
   estimate_nav: number;
   daily_growth: number;
-  estimate_time: string;
+  estimate_time: Date;
 }
 
 // 历史数据点
 export interface HistoryPoint {
-  time: string;
+  time: Date;
   estimate_nav: number;
   daily_growth: number;
 }

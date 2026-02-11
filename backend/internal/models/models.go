@@ -16,7 +16,7 @@ type Fund struct {
 	Name          string    `json:"name"`
 	Sector        string    `json:"sector"`
 	Nav           float64   `json:"nav"`
-	NavDate       string    `json:"nav_date"`
+	NavDate       time.Time `json:"nav_date"`
 	EstimateNav   float64   `json:"estimate_nav"`
 	EstimateTime  time.Time `json:"estimate_time"`
 	DailyGrowth   float64   `json:"daily_growth"`
@@ -75,23 +75,37 @@ func InitDB(path string) error {
 }
 
 func createTables() error {
+	// 先删除旧表（如果存在），重新创建以应用新的 DATETIME 类型
+	dropTables := []string{
+		"DROP TABLE IF EXISTS funds",
+		"DROP TABLE IF EXISTS positions",
+		"DROP TABLE IF EXISTS sectors",
+		"DROP TABLE IF EXISTS estimate_history",
+		"DROP TABLE IF EXISTS config",
+	}
+	for _, stmt := range dropTables {
+		if _, err := db.Exec(stmt); err != nil {
+			return err
+		}
+	}
+
 	tables := []string{
-		`CREATE TABLE IF NOT EXISTS funds (
+		`CREATE TABLE funds (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			code TEXT UNIQUE NOT NULL,
 			name TEXT,
 			sector TEXT,
 			nav REAL DEFAULT 0,
-			nav_date TEXT,
+			nav_date DATETIME,
 			estimate_nav REAL DEFAULT 0,
-			estimate_time TEXT,
+			estimate_time DATETIME,
 			daily_growth REAL DEFAULT 0,
 			subscribed INTEGER DEFAULT 0,
-			subscribe_time TEXT,
-			created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-			updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+			subscribe_time DATETIME,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
-		`CREATE TABLE IF NOT EXISTS positions (
+		`CREATE TABLE positions (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			fund_code TEXT NOT NULL,
 			fund_name TEXT,
@@ -103,29 +117,29 @@ func createTables() error {
 			profit_rate REAL DEFAULT 0,
 			daily_growth REAL DEFAULT 0,
 			sector TEXT,
-			created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-			updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
-		`CREATE TABLE IF NOT EXISTS sectors (
+		`CREATE TABLE sectors (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT UNIQUE NOT NULL,
 			color TEXT DEFAULT '#1890ff',
 			sort_order INTEGER DEFAULT 0,
-			created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-			updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
-		`CREATE TABLE IF NOT EXISTS estimate_history (
+		`CREATE TABLE estimate_history (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			fund_code TEXT NOT NULL,
 			estimate_nav REAL DEFAULT 0,
 			daily_growth REAL DEFAULT 0,
-			recorded_at TEXT DEFAULT CURRENT_TIMESTAMP,
-			created_at TEXT DEFAULT CURRENT_TIMESTAMP
+			recorded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
-		`CREATE TABLE IF NOT EXISTS config (
+		`CREATE TABLE config (
 			key TEXT PRIMARY KEY,
 			value TEXT,
-			updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
 	}
 

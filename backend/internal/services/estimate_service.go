@@ -185,7 +185,7 @@ func (s *EstimateService) GetAllSubscribedFunds() ([]models.Fund, error) {
 			fund.EstimateTime, _ = time.Parse("2006-01-02 15:04:05", estimateTime.String)
 		}
 		if navDate.Valid {
-			fund.NavDate = navDate.String
+			fund.NavDate, _ = time.Parse("2006-01-02", navDate.String)
 		}
 
 		funds = append(funds, fund)
@@ -218,7 +218,7 @@ func (s *EstimateService) GetFundFromDB(code string) (*models.Fund, error) {
 		fund.EstimateTime, _ = time.Parse("2006-01-02 15:04:05", estimateTime.String)
 	}
 	if navDate.Valid {
-		fund.NavDate = navDate.String
+		fund.NavDate, _ = time.Parse("2006-01-02", navDate.String)
 	}
 
 	return &fund, nil
